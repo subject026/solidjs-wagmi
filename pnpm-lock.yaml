@@ -7,6 +7,9 @@ dependencies:
   '@astrojs/tailwind':
     specifier: ^4.0.0
     version: 4.0.0(astro@2.10.14)(tailwindcss@3.3.3)
+  '@tanstack/solid-query':
+    specifier: ^4.33.0
+    version: 4.33.0(solid-js@1.7.11)
   '@types/d3':
     specifier: ^7.4.0
     version: 7.4.0
@@ -22,6 +25,12 @@ dependencies:
   d3:
     specifier: ^7.8.5
     version: 7.8.5
+  graphql:
+    specifier: ^16.8.0
+    version: 16.8.0
+  graphql-request:
+    specifier: ^6.1.0
+    version: 6.1.0(graphql@16.8.0)
   solid-js:
     specifier: ^1.4.3
     version: 1.7.11
@@ -840,6 +849,14 @@ packages:
     dev: false
     optional: true
 
+  /@graphql-typed-document-node/core@3.2.0(graphql@16.8.0):
+    resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      graphql: 16.8.0
+    dev: false
+
   /@jridgewell/gen-mapping@0.3.3:
     resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
     engines: {node: '>=6.0.0'}
@@ -1237,6 +1254,19 @@ packages:
       '@stablelib/keyagreement': 1.0.1
       '@stablelib/random': 1.0.2
       '@stablelib/wipe': 1.0.1
+    dev: false
+
+  /@tanstack/query-core@4.33.0:
+    resolution: {integrity: sha512-qYu73ptvnzRh6se2nyBIDHGBQvPY1XXl3yR769B7B6mIDD7s+EZhdlWHQ67JI6UOTFRaI7wupnTnwJ3gE0Mr/g==}
+    dev: false
+
+  /@tanstack/solid-query@4.33.0(solid-js@1.7.11):
+    resolution: {integrity: sha512-+AB28zc30XE+NvRf5nJmOGcMEqYNpKcr+C7GUfs1VlHn/pXZ/xLEoD4rnBPFpZ8tVLCFmIzNwIMd9mrn8IinEg==}
+    peerDependencies:
+      solid-js: ^1.5.7
+    dependencies:
+      '@tanstack/query-core': 4.33.0
+      solid-js: 1.7.11
     dev: false
 
   /@types/babel__core@7.20.1:
@@ -3372,6 +3402,23 @@ packages:
 
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
+    dev: false
+
+  /graphql-request@6.1.0(graphql@16.8.0):
+    resolution: {integrity: sha512-p+XPfS4q7aIpKVcgmnZKhMNqhltk20hfXtkaIkTfjjmiKMJ5xrt5c743cL03y/K7y1rg3WrIC49xGiEQ4mxdNw==}
+    peerDependencies:
+      graphql: 14 - 16
+    dependencies:
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.0)
+      cross-fetch: 3.1.8
+      graphql: 16.8.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /graphql@16.8.0:
+    resolution: {integrity: sha512-0oKGaR+y3qcS5mCu1vb7KG+a89vjn06C7Ihq/dDl3jA+A8B3TKomvi3CiEcVLJQGalbu8F52LxkOym7U5sSfbg==}
+    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
     dev: false
 
   /gray-matter@4.0.3:
