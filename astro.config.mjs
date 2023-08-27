@@ -15,7 +15,7 @@ export default defineConfig({
               return "wagmi";
             }
             if (id.includes("d3")) {
-              return "react";
+              return "d3";
             }
             return null;
           },
