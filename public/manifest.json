@@ -1,5 +1,8 @@
 {
   "name": "SolidJS and Wagmi on Astro!",
   "description": "Just testing things out...",
-  "iconPath": "appicon.svg"
+  "iconPath": "appicon.svg",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET",
+  "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
 }
