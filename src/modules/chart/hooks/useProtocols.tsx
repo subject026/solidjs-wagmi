@@ -5,12 +5,14 @@ import { graphQLClient } from "../../chart/graphqlClient";
 import { createQuery } from "@tanstack/solid-query";
 import { z } from "zod";
 
-const ZProtocols = z
-  .object({
-    name: z.string(),
-    logo: z.string(),
-  })
-  .array();
+const ZProtocol = z.object({
+  name: z.string(),
+  logo: z.string(),
+});
+
+const ZProtocols = ZProtocol.array();
+
+export type Protocol = z.infer<typeof ZProtocol>;
 
 async function fetchProtocols() {
   const res = await fetch(ENDPOINT);
@@ -20,17 +22,13 @@ async function fetchProtocols() {
   return ZProtocols.parse(data);
 }
 
-type ProtocolData = {
-  [key: string]: string;
-}[];
-
 export default function useProtocols() {
-  const [data, setData] = createSignal<null | ProtocolData>(null);
+  const [data, setData] = createSignal<null | Protocol[]>(null);
   const [status, setStatus] = createSignal<
     "success" | "loading" | "error" | null
   >(null);
 
-  const query = createQuery<ProtocolData>(
+  const query = createQuery(
     () => ["protocols"],
     () => fetchProtocols()
   );
