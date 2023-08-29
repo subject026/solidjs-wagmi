@@ -17,6 +17,7 @@ import {
 } from "@tanstack/solid-query";
 import { GraphQLClient, gql } from "graphql-request";
 import useWeeklyBread from "../hooks/useWeeklyBread";
+import useProtocols from "../modules/chart/hooks/useProtocols";
 
 async function getChart() {
   const d3 = await import("d3");
@@ -25,7 +26,7 @@ async function getChart() {
 const queryClient = new QueryClient();
 
 export function App() {
-  const { data } = useWeeklyBread();
+  const { data } = useProtocols();
 
   onMount(() => {
     getChart();

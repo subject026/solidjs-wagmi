@@ -1,44 +1,34 @@
-import { connect, getAccount } from "@wagmi/core";
-import { useWagmiConfig } from "../../../hooks/providers/WagmiProvider";
-import { Show, createEffect } from "solid-js";
-import { disconnect } from "@wagmi/core";
+import { readContract } from "@wagmi/core";
 
-function useConnectedUser() {
-  const { isConnected, config, checkIsConnected } = useWagmiConfig();
+import ERC20_ABI from "../../../ERC20.json";
+import { createSignal, onMount } from "solid-js";
+import { formatUnits, parseUnits } from "viem";
 
-  async function handleConnect() {
-    try {
-      const result = await connect({
-        connector: config().connectors[0],
-      });
-      checkIsConnected();
-    } catch (error) {
-      console.log(error);
-    }
-  }
+const DAI_ADDRESS = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063";
 
-  async function handleDisconnect() {
-    try {
-      await disconnect();
-      checkIsConnected();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  return { handleConnect, handleDisconnect, isConnected };
-}
+export default function Balance({
+  holderAddress,
+}: {
+  holderAddress: `0x${string}`;
+}) {
+  const [data, setData] = createSignal<any>(null);
 
-export function Balance() {
-  const { isConnected, handleConnect, handleDisconnect } = useConnectedUser();
+  onMount(async () => {
+    const data = await readContract({
+      address: DAI_ADDRESS,
+      abi: ERC20_ABI,
+      functionName: "balanceOf",
+      args: [holderAddress],
+    });
+
+    console.log(data);
+
+    setData(formatUnits(data as bigint, 18));
+  });
+
   return (
-    <article>
-      <div>
-        <Show when={isConnected()}>
-          Balance {isConnected() ? "Connected" : "Not Connected"}
-        </Show>
-      </div>
-      <button onClick={() => handleDisconnect()}>Disconnect</button>
-      <button onClick={() => handleConnect()}>Connect</button>
-    </article>
+    <section>
+      <pre>{JSON.stringify(data(), null, 2)}</pre>
+    </section>
   );
 }

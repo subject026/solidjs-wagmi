@@ -14,12 +14,13 @@ import {
   createConfig,
   getAccount,
 } from "@wagmi/core";
-import { polygon, polygonMumbai } from "@wagmi/core/chains";
+import { polygon, polygonMumbai, localhost } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import { MetaMaskConnector } from "@wagmi/core/connectors/metaMask";
+import { SafeConnector } from "@wagmi/core/connectors/safe";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygon, polygonMumbai],
+  [polygon, polygonMumbai, localhost],
   [publicProvider()]
 );
 
@@ -28,6 +29,12 @@ const wagmiConfig = createConfig({
   connectors: [
     new InjectedConnector({ chains, options: { shimDisconnect: true } }),
     new MetaMaskConnector({ chains, options: { shimDisconnect: true } }),
+    new SafeConnector({
+      chains,
+      options: {
+        debug: true,
+      },
+    }),
   ],
   publicClient,
   webSocketPublicClient,
@@ -36,7 +43,7 @@ const wagmiConfig = createConfig({
 // export type WagmiContextType = typeof config;
 
 export type WagmiContextType = {
-  isConnected: Accessor<boolean>;
+  user: Accessor<ConnectedUserState>;
   config: Accessor<typeof wagmiConfig>;
   checkIsConnected: () => void;
   // increment: Setter<undefined>;
@@ -45,23 +52,23 @@ export type WagmiContextType = {
 
 const WagmiContext = createContext<WagmiContextType>();
 
-export function WagmiProvider(props: { children: JSX.Element }) {
-  const [isConnected, setIsConnected] = createSignal(false);
-  const [config, setConfig] = createSignal(wagmiConfig);
+type ConnectedUserState = null | {
+  address: `0x${string}`;
+};
 
-  // const counter = {
-  //   count,
-  //   increment(): undefined {
-  //     setCount((c) => c + 1);
-  //   },
-  //   decrement(): undefined {
-  //     setCount((c) => c - 1);
-  //   },
-  // };
+export function WagmiProvider(props: { children: JSX.Element }) {
+  const [user, setUser] = createSignal<ConnectedUserState>(null);
+  const [config] = createSignal(wagmiConfig);
 
   async function checkIsConnected() {
     const account = await getAccount();
-    setIsConnected(account.isConnected);
+    if (account && account.address) {
+      setUser({
+        address: account.address,
+      });
+    } else {
+      setUser(null);
+    }
   }
 
   createEffect(() => {
@@ -72,7 +79,7 @@ export function WagmiProvider(props: { children: JSX.Element }) {
     <WagmiContext.Provider
       value={{
         config,
-        isConnected,
+        user,
         checkIsConnected,
       }}
     >

@@ -1,12 +1,15 @@
+import { SafeProvider } from "../hooks/providers/SafeProvider";
 import { WagmiProvider } from "../hooks/providers/WagmiProvider";
 import Layout from "../layouts/Layout";
-import { Balance } from "../modules/app/components/Balance";
+import { Account } from "../modules/app/components/Account";
 
 export default function App() {
   return (
     <Layout>
       <WagmiProvider>
-        <Balance />
+        {/* <SafeProvider> */}
+        <Account />
+        {/* </SafeProvider> */}
       </WagmiProvider>
     </Layout>
   );
