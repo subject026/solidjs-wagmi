@@ -32,6 +32,7 @@ const wagmiConfig = createConfig({
     new SafeConnector({
       chains,
       options: {
+        allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
         debug: true,
       },
     }),
