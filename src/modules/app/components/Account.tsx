@@ -1,18 +1,27 @@
-import { connect, getAccount, readContract } from "@wagmi/core";
+import {
+  connect,
+  createConfig,
+  getAccount,
+  getConfig,
+  readContract,
+} from "@wagmi/core";
 import { useWagmiConfig } from "../../../hooks/providers/WagmiProvider";
 import { Match, Show, Switch, createEffect, createSignal } from "solid-js";
 import { disconnect } from "@wagmi/core";
 import Button from "../../core/components/Button";
 import Balance from "./Balance";
 
-function useConnectedUser() {
-  const { user, config, checkIsConnected } = useWagmiConfig();
+export function useConnectedUser() {
+  // const [user, setUser] = createSignal<null | string>(null);
+  const { user, checkIsConnected } = useWagmiConfig();
 
   async function handleConnect() {
+    const config = getConfig();
+    console.log(config);
     try {
-      console.log(config().connectors);
+      console.log(config.connectors);
       const result = await connect({
-        connector: config().connectors[0],
+        connector: config.connectors[0],
       });
       checkIsConnected();
     } catch (error) {
@@ -34,16 +43,6 @@ function useConnectedUser() {
 export function Account() {
   const { user, handleConnect, handleDisconnect } = useConnectedUser();
 
-  const [userHere, setUserHere] = createSignal();
-
-  createEffect(() => {
-    const updatedUser = user();
-
-    console.log({ updatedUser });
-
-    setUserHere(updatedUser);
-  });
-
   return (
     <article>
       <div>
@@ -55,7 +54,6 @@ export function Account() {
           {(user) => (
             <>
               <Button handleClick={() => handleDisconnect()}>Disconnect</Button>
-              <Balance holderAddress={user().address} />
             </>
           )}
         </Show>

@@ -6,6 +6,8 @@ import {
   Accessor,
   Setter,
   createEffect,
+  onMount,
+  ParentComponent,
 } from "solid-js";
 import {
   InjectedConnector,
@@ -32,7 +34,6 @@ const wagmiConfig = createConfig({
     new SafeConnector({
       chains,
       options: {
-        allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
         debug: true,
       },
     }),
@@ -41,25 +42,13 @@ const wagmiConfig = createConfig({
   webSocketPublicClient,
 });
 
-// export type WagmiContextType = typeof config;
-
-export type WagmiContextType = {
-  user: Accessor<ConnectedUserState>;
-  config: Accessor<typeof wagmiConfig>;
-  checkIsConnected: () => void;
-  // increment: Setter<undefined>;
-  // decrement: Setter<undefined>;
-};
-
-const WagmiContext = createContext<WagmiContextType>();
-
-type ConnectedUserState = null | {
-  address: `0x${string}`;
-};
-
-export function WagmiProvider(props: { children: JSX.Element }) {
+function createWagmiContext() {
   const [user, setUser] = createSignal<ConnectedUserState>(null);
   const [config] = createSignal(wagmiConfig);
+
+  onMount(() => {
+    checkIsConnected();
+  });
 
   async function checkIsConnected() {
     const account = await getAccount();
@@ -72,10 +61,18 @@ export function WagmiProvider(props: { children: JSX.Element }) {
     }
   }
 
-  createEffect(() => {
-    checkIsConnected();
-  });
+  return { user, config, checkIsConnected };
+}
 
+const WagmiContext = createContext<ReturnType<typeof createWagmiContext>>();
+
+type ConnectedUserState = null | {
+  address: `0x${string}`;
+};
+
+export const WagmiProvider: ParentComponent = (props) => {
+  console.log("provider!");
+  const { user, config, checkIsConnected } = createWagmiContext();
   return (
     <WagmiContext.Provider
       value={{
@@ -87,8 +84,10 @@ export function WagmiProvider(props: { children: JSX.Element }) {
       {props.children}
     </WagmiContext.Provider>
   );
-}
+};
 
 export function useWagmiConfig() {
-  return useContext(WagmiContext)!;
+  const context = useContext(WagmiContext);
+  if (!context) throw new Error("must be used inside wagmi provider!");
+  return context;
 }

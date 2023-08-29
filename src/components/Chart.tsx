@@ -2,6 +2,7 @@ import {
   For,
   JSX,
   Match,
+  Show,
   Suspense,
   Switch,
   createEffect,
@@ -18,6 +19,7 @@ import {
 import { GraphQLClient, gql } from "graphql-request";
 import useWeeklyBread from "../hooks/useWeeklyBread";
 import useProtocols from "../modules/chart/hooks/useProtocols";
+import { WagmiProvider } from "../hooks/providers/WagmiProvider";
 
 async function getChart() {
   const d3 = await import("d3");
@@ -33,56 +35,34 @@ export function App() {
   });
 
   return (
-    <Layout>
-      <pre>{JSON.stringify(data(), null, 2)}</pre>
-      {/* <Switch>
-        <Match when={query.isLoading}>
-          <p>Loading...</p>
-        </Match>
+    <WagmiProvider>
+      <Layout>
+        <div class="p-4 flex flex-col gap-2">
+          <Show when={data()}>
+            {(data) => {
+              console.log("data()", data());
 
-        <Match when={query.isSuccess}>
-          <pre>{JSON.stringify(query.data, null, 2)}</pre>
-          <For each={query.data}>
-            {(snapshot) => <p>{snapshot.weeklyTotalSupply}</p>}
-          </For>
-        </Match>
-      </Switch>
+              return data().map((protocol) => {
+                console.log(protocol);
+                return (
+                  <article class=" bg-neutral-800 rounded p-4 flex gap-4">
+                    <div class="w-12 h-12 rounded-full overflow-clip">
+                      <img src={protocol.logo} alt="" />
+                    </div>
+                    <h3 class="font-medium text-lg">{protocol.name}</h3>
+                  </article>
+                );
+              });
+            }}
+          </Show>
+        </div>
 
-      <Suspense fallback={"Loading..."}>
-        <For each={query.data}>
-          {(snapshot) => <div>{snapshot.weeklyTotalSupply}</div>}
-        </For>
-      </Suspense> */}
-      <section>
-        <div id="chart-container"></div>
-      </section>
-    </Layout>
+        <section>
+          <div id="chart-container"></div>
+        </section>
+      </Layout>
+    </WagmiProvider>
   );
-
-  //   const query = createQuery(
-  //     () => ["repoData"],
-  //     () =>
-  //       fetch("https://api.github.com/repos/tannerlinsley/react-query").then(
-  //         (res) => res.json()
-  //       )
-  //   );
-
-  //   // ✅ access query properties in JSX reactive context
-  //   return (
-  //     <Switch>
-  //       <Match when={query.isLoading}>Loading...</Match>
-  //       {/* <Match when={query.isError}>Error: {query.error.message}</Match> */}
-  //       <Match when={query.isSuccess}>
-  //         <div>
-  //           <h1>{query.data.name}</h1>
-  //           <p>{query.data.description}</p>
-  //           <strong>👀 {query.data.subscribers_count}</strong>{" "}
-  //           <strong>✨ {query.data.stargazers_count}</strong>{" "}
-  //           <strong>🍴 {query.data.forks_count}</strong>
-  //         </div>
-  //       </Match>
-  //     </Switch>
-  //   );
 }
 
 export default function AppIsland() {

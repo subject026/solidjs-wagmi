@@ -1,23 +1,36 @@
-const ENDPOINT = "https://api.llama.fi/protocols"
+const ENDPOINT = "https://api.llama.fi/protocols";
 
 import { createEffect, createSignal } from "solid-js";
 import { graphQLClient } from "../../chart/graphqlClient";
 import { createQuery } from "@tanstack/solid-query";
+import { z } from "zod";
+
+const ZProtocols = z
+  .object({
+    name: z.string(),
+    logo: z.string(),
+  })
+  .array();
 
 async function fetchProtocols() {
   const res = await fetch(ENDPOINT);
-  const data = await res.json()
+  const data = await res.json();
   console.log("data.length: ", data.length);
-  return data;
+  console.log("data[0]: ", data[0]);
+  return ZProtocols.parse(data);
 }
 
+type ProtocolData = {
+  [key: string]: string;
+}[];
+
 export default function useProtocols() {
-  const [data, setData] = createSignal([]);
+  const [data, setData] = createSignal<null | ProtocolData>(null);
   const [status, setStatus] = createSignal<
     "success" | "loading" | "error" | null
   >(null);
 
-  const query = createQuery(
+  const query = createQuery<ProtocolData>(
     () => ["protocols"],
     () => fetchProtocols()
   );

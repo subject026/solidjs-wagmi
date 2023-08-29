@@ -1,9 +1,14 @@
 import clsx from "clsx";
 import type { JSX } from "solid-js/jsx-runtime";
 import { PAGE_WRAP } from "../constants";
+import { Account } from "../modules/app/components/Account";
+import { WagmiProvider } from "../hooks/providers/WagmiProvider";
+import { AppInterface } from "../modules/app/components/AppInterface";
 
 export default function Layout({ children }: { children: JSX.Element }) {
+  console.log("layout");
   return (
+    // <WagmiProvider>
     <div class=" flex flex-col min-h-screen bg-neutral-900 text-neutral-400">
       <header class="">
         <div
@@ -20,8 +25,10 @@ export default function Layout({ children }: { children: JSX.Element }) {
               chart
             </a>
           </nav>
+          <Account />
         </div>
       </header>
+
       <main class="grow">{children}</main>
       <footer>
         <div class={clsx(PAGE_WRAP, "py-4 md:py-6 ")}>
@@ -29,5 +36,6 @@ export default function Layout({ children }: { children: JSX.Element }) {
         </div>
       </footer>
     </div>
+    // </WagmiProvider>
   );
 }
