@@ -19,9 +19,11 @@ export function useConnectedUser() {
     const config = getConfig();
     console.log(config);
     try {
-      console.log(config.connectors);
+      const safeConnector = config.connectors.find(
+        (connector) => connector.name === "Safe"
+      );
       const result = await connect({
-        connector: config.connectors[0],
+        connector: safeConnector?.ready ? safeConnector : config.connectors[0],
       });
       checkIsConnected();
     } catch (error) {
